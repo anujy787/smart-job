@@ -1,9 +1,15 @@
 package edu.neu.csye7374.smartjob.service;
 
+import edu.neu.csye7374.smartjob.factory.UserFactory;
+import edu.neu.csye7374.smartjob.model.Employer;
+import edu.neu.csye7374.smartjob.model.JobSeeker;
 import edu.neu.csye7374.smartjob.model.User;
 import edu.neu.csye7374.smartjob.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+import java.util.Base64;
 
 @Service
 public class UserService {
@@ -11,19 +17,61 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
     
-    public User registerUser(User user) {
-        if (userRepository.existsByEmail(user.getEmail())) {
-            throw new RuntimeException("Email already exists");
+    @Autowired
+    private UserFactory userFactory;
+    
+    /**
+     * Register a new JobSeeker
+     */
+    public JobSeeker registerJobSeeker(String firstName, String lastName, String email, String password, 
+                                      String skills, String experience, String education) {
+        // Check if email already exists
+        if (userRepository.existsByEmail(email)) {
+            throw new RuntimeException("Email already registered");
         }
-        return userRepository.save(user);
+        
+        // Encode password (simple encoding for demo purposes)
+        String encodedPassword = Base64.getEncoder().encodeToString(password.getBytes());
+        
+        // Create JobSeeker using factory
+        JobSeeker jobSeeker = userFactory.createJobSeeker(firstName, lastName, email, encodedPassword,
+                                                          skills, experience, education);
+        
+        // Save to database
+        return (JobSeeker) userRepository.save(jobSeeker);
     }
     
+    /**
+     * Register a new Employer
+     */
+    public Employer registerEmployer(String firstName, String lastName, String email, String password,
+                                     String companyName, String industry, String companySize) {
+        // Check if email already exists
+        if (userRepository.existsByEmail(email)) {
+            throw new RuntimeException("Email already registered");
+        }
+        
+        String encodedPassword = Base64.getEncoder().encodeToString(password.getBytes());
+        
+        Employer employer = userFactory.createEmployer(firstName, lastName, email, encodedPassword,
+                                                       companyName, industry, companySize);
+        
+        return (Employer) userRepository.save(employer);
+    }
+    
+
     public User authenticateUser(String email, String password) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-                
-        if (!password.equals(user.getPassword())) {
-            throw new RuntimeException("Invalid password");
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        
+        if (userOpt.isEmpty()) {
+            throw new RuntimeException("Invalid email or password");
+        }
+        
+        User user = userOpt.get();
+        
+        String encodedInput = Base64.getEncoder().encodeToString(password.getBytes());
+        if (!encodedInput.equals(user.getPassword())) {
+            throw new RuntimeException("Invalid email or password");
         }
         
         return user;
