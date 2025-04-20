@@ -26,7 +26,7 @@ public class JobPostService {
 	}
 	
 	public void updateJobPost(JobPost updatedJob) {
-		JobPost existing = jobPostRepo.findById(updatedJob.getId()).orElseThrow(() -> new RuntimeException("Job post not found"));
+		JobPost existing = jobPostRepo.findById(updatedJob.getJobId()).orElseThrow(() -> new RuntimeException("Job post not found"));
 		existing.setTitle(updatedJob.getTitle());
         existing.setCompanyName(updatedJob.getCompanyName());
         existing.setLocation(updatedJob.getLocation());

@@ -2,9 +2,12 @@ package edu.neu.csye7374.smartjob.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 
@@ -15,7 +18,12 @@ public class JobPost {
 		
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private Long jobId;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id", nullable = false)
+    private User user;
+	
 	
 	private String title;
 	private String companyName;
@@ -31,11 +39,11 @@ public class JobPost {
 	private String jobResponsibilities;
 	
 	
-	public Long getId() {
-		return id;
+	public Long getJobId() {
+		return jobId;
 	}
-	public void setId(Long id) {
-		this.id = id;
+	public void setJobId(Long jobId) {
+		this.jobId = jobId;
 	}
 	public String getTitle() {
 		return title;
@@ -84,6 +92,13 @@ public class JobPost {
 	}
 	public void setJobResponsibilities(String jobResponsibilities) {
 		this.jobResponsibilities = jobResponsibilities;
+	}
+	
+	public User getUser() {
+		return user;
+	}
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 }
