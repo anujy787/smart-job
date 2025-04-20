@@ -7,6 +7,11 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        .role-fields {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -33,28 +38,40 @@
 
     <div class="container mt-5">
         <div class="row justify-content-center">
-            <div class="col-md-6">
+            <div class="col-md-8">
                 <div class="card shadow">
                     <div class="card-header bg-primary text-white">
                         <h4 class="mb-0">Create Your Account</h4>
                         <p class="mb-0">Join SmartJob today</p>
                     </div>
                     <div class="card-body">
-                        <form th:action="@{/signup}" method="post">
-                            <div class="mb-3">
-                                <label for="firstName" class="form-label">First Name</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                    <input type="text" class="form-control" id="firstName" name="firstName" required>
+                        <!-- Alert messages -->
+                        <div th:if="${successMessage}" class="alert alert-success" role="alert">
+                            <span th:text="${successMessage}"></span>
+                        </div>
+                        <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+                            <span th:text="${errorMessage}"></span>
+                        </div>
+                        
+                        <form th:action="@{/signup/process}" method="post">
+                            <!-- Common fields for all user types -->
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="firstName" class="form-label">First Name</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                        <input type="text" class="form-control" id="firstName" name="firstName" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="lastName" class="form-label">Last Name</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                        <input type="text" class="form-control" id="lastName" name="lastName" required>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="mb-3">
-                                <label for="lastName" class="form-label">Last Name</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                    <input type="text" class="form-control" id="lastName" name="lastName" required>
-                                </div>
-                            </div>
+                            
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email address</label>
                                 <div class="input-group">
@@ -62,34 +79,128 @@
                                     <input type="email" class="form-control" id="email" name="email" required>
                                 </div>
                             </div>
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Password</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                    <input type="password" class="form-control" id="password" name="password" required>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="password" class="form-label">Password</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                        <input type="password" class="form-control" id="password" name="password" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="confirmPassword" class="form-label">Confirm Password</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="mb-3">
-                                <label for="confirmPassword" class="form-label">Confirm Password</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
-                                </div>
-                            </div>
-                            <div class="mb-3">
+                            
+                            <div class="mb-4">
                                 <label for="role" class="form-label">I am a</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
-                                    <select class="form-select" id="role" name="role" required>
+                                    <select class="form-select" id="role" name="role" required onchange="toggleRoleFields()">
                                         <option value="">Select your role</option>
                                         <option value="JOB_SEEKER">Job Seeker</option>
                                         <option value="EMPLOYER">Employer</option>
                                     </select>
                                 </div>
                             </div>
+                            
+                            <!-- Job Seeker specific fields -->
+                            <div id="jobSeekerFields" class="role-fields mb-4">
+                                <h5 class="border-bottom pb-2 mb-3">Job Seeker Profile</h5>
+                                
+                                <div class="mb-3">
+                                    <label for="skills" class="form-label">Skills</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-tools"></i></span>
+                                        <input type="text" class="form-control" id="skills" name="skills" placeholder="e.g. Java, Python, Project Management">
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="experience" class="form-label">Experience</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-briefcase"></i></span>
+                                        <select class="form-select" id="experience" name="experience">
+                                            <option value="">Select your experience level</option>
+                                            <option value="0-1 years">0-1 years</option>
+                                            <option value="1-3 years">1-3 years</option>
+                                            <option value="3-5 years">3-5 years</option>
+                                            <option value="5-10 years">5-10 years</option>
+                                            <option value="10+ years">10+ years</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="education" class="form-label">Education</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-graduation-cap"></i></span>
+                                        <select class="form-select" id="education" name="education">
+                                            <option value="">Select your highest education</option>
+                                            <option value="High School">High School</option>
+                                            <option value="Associate's Degree">Associate's Degree</option>
+                                            <option value="Bachelor's Degree">Bachelor's Degree</option>
+                                            <option value="Master's Degree">Master's Degree</option>
+                                            <option value="Doctorate">Doctorate</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Employer specific fields -->
+                            <div id="employerFields" class="role-fields mb-4">
+                                <h5 class="border-bottom pb-2 mb-3">Company Information</h5>
+                                
+                                <div class="mb-3">
+                                    <label for="companyName" class="form-label">Company Name</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-building"></i></span>
+                                        <input type="text" class="form-control" id="companyName" name="companyName">
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="industry" class="form-label">Industry</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-industry"></i></span>
+                                        <select class="form-select" id="industry" name="industry">
+                                            <option value="">Select your industry</option>
+                                            <option value="Technology">Technology</option>
+                                            <option value="Healthcare">Healthcare</option>
+                                            <option value="Finance">Finance</option>
+                                            <option value="Education">Education</option>
+                                            <option value="Manufacturing">Manufacturing</option>
+                                            <option value="Retail">Retail</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="companySize" class="form-label">Company Size</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-users"></i></span>
+                                        <select class="form-select" id="companySize" name="companySize">
+                                            <option value="">Select company size</option>
+                                            <option value="1-10 employees">1-10 employees</option>
+                                            <option value="11-50 employees">11-50 employees</option>
+                                            <option value="51-200 employees">51-200 employees</option>
+                                            <option value="201-500 employees">201-500 employees</option>
+                                            <option value="501-1000 employees">501-1000 employees</option>
+                                            <option value="1000+ employees">1000+ employees</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
                             <div class="d-grid">
                                 <button type="submit" class="btn btn-primary btn-lg">
-                                    <i class="fas fa-user-plus me-2"></i>Sign Up
+                                    <i class="fas fa-user-plus me-2"></i>Create Account
                                 </button>
                             </div>
                         </form>
@@ -103,5 +214,34 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleRoleFields() {
+            const role = document.getElementById('role').value;
+            const jobSeekerFields = document.getElementById('jobSeekerFields');
+            const employerFields = document.getElementById('employerFields');
+            
+            // Hide all role-specific fields first
+            jobSeekerFields.style.display = 'none';
+            employerFields.style.display = 'none';
+            
+            // Show fields based on selected role
+            if (role === 'JOB_SEEKER') {
+                jobSeekerFields.style.display = 'block';
+            } else if (role === 'EMPLOYER') {
+                employerFields.style.display = 'block';
+            }
+        }
+        
+        // Form validation for password confirmation
+        document.querySelector('form').addEventListener('submit', function(event) {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                event.preventDefault();
+                alert('Passwords do not match!');
+            }
+        });
+    </script>
 </body>
 </html> 

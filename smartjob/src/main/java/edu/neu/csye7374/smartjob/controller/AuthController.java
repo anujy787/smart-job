@@ -5,9 +5,7 @@ import edu.neu.csye7374.smartjob.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -19,7 +17,7 @@ public class AuthController {
     
     @GetMapping("/")
     public String showLandingPage() {
-        return "landing";
+        return "index";
     }
     
     @GetMapping("/login")
@@ -28,19 +26,18 @@ public class AuthController {
     }
     
     @GetMapping("/signup")
-    public String showSignupPage(Model model) {
-        model.addAttribute("user", new User());
+    public String showSignupPage() {
         return "signup";
     }
     
     @PostMapping("/signup")
-    public String processSignup(@ModelAttribute User user) {
-        try {
-            userService.registerUser(user);
-            return "redirect:/login?signupSuccess=true";
-        } catch (RuntimeException e) {
-            return "redirect:/signup?error=" + e.getMessage();
-        }
+    public String processSignup(@RequestParam String email, 
+                                @RequestParam String password,
+                                @RequestParam String firstName,
+                                @RequestParam String lastName,
+                                @RequestParam String role,
+                                HttpSession session) {
+        return "forward:/signup/process";
     }
     
     @PostMapping("/login")
