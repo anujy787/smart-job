@@ -45,7 +45,7 @@ public class UserService {
         JobSeeker savedJobSeeker = (JobSeeker) userRepository.save(jobSeeker);
         
         // Send welcome email
-        emailService.sendWelcomeEmail(email, firstName);
+        emailService.sendWelcomeEmail(email, firstName, false);
         
         return savedJobSeeker;
     }
@@ -68,7 +68,7 @@ public class UserService {
         Employer savedEmployer = (Employer) userRepository.save(employer);
         
         // Send welcome email
-        emailService.sendWelcomeEmail(email, firstName);
+        emailService.sendWelcomeEmail(email, firstName, true);
         
         return savedEmployer;
     }

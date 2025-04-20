@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Smart-Job</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
+        .container { max-width: 600px; margin: 20px auto; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+        .header { background-color: #28a745; color: #ffffff; padding: 10px 0; text-align: center; border-radius: 8px 8px 0 0; }
+        .content { padding: 20px; }
+        .footer { text-align: center; padding: 10px 0; color: #777777; }
+        .button { display: inline-block; padding: 10px 20px; margin: 20px 0; color: #ffffff; background-color: #28a745; text-decoration: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Welcome to Smart-Job, {{firstName}}!</h1>
+        </div>
+        <div class="content">
+            <p>Dear {{firstName}},</p>
+            <p>Thank you for joining Smart-Job as a job seeker. We are thrilled to help you find your dream job!</p>
+            <p>Here are a few tips to get you started:</p>
+            <ul>
+                <li>Complete your profile to stand out to employers.</li>
+                <li>Use our advanced search to find jobs that match your skills.</li>
+                <li>Apply to jobs and track your applications easily.</li>
+            </ul>
+            <a href="https://smart-job.com/jobs" class="button">Start Searching Jobs</a>
+        </div>
+        <div class="footer">
+            <p>Smart-Job Team</p>
+        </div>
+    </div>
+</body>
+</html> 

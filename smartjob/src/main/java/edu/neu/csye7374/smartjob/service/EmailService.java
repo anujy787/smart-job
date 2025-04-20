@@ -10,6 +10,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 
 import java.util.Collections;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 @Service
 public class EmailService {
@@ -22,14 +26,18 @@ public class EmailService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public void sendWelcomeEmail(String toEmail, String firstName) {
+    public void sendWelcomeEmail(String toEmail, String firstName, boolean isEmployer) {
+        String templatePath = isEmployer ? "/templates/welcome_employer.html" : "/templates/welcome_jobseeker.html";
+        String emailContent = loadTemplate(templatePath);
+        emailContent = emailContent.replace("{{firstName}}", firstName);
+
         String url = String.format("https://api.mailgun.net/v3/%s/messages", domain);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setBasicAuth("api", apiKey);
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        String body = String.format("from=welcome@%s&to=%s&subject=Welcome to Smart-Job&text=Hello %s, welcome to Smart-Job!", domain, toEmail, firstName);
+        String body = String.format("from=welcome@%s&to=%s&subject=Welcome to Smart-Job&html=%s", domain, toEmail, emailContent);
 
         HttpEntity<String> request = new HttpEntity<>(body, headers);
 
@@ -37,6 +45,14 @@ public class EmailService {
 
         if (!response.getStatusCode().is2xxSuccessful()) {
             throw new RuntimeException("Failed to send email");
+        }
+    }
+
+    private String loadTemplate(String path) {
+        try {
+            return new String(Files.readAllBytes(Paths.get(getClass().getResource(path).toURI())));
+        } catch (IOException | URISyntaxException e) {
+            throw new RuntimeException("Failed to load email template", e);
         }
     }
 }
