@@ -22,39 +22,51 @@ public class UserFactory {
         // Dynamically create the appropriate user type based on role
         switch (role) {
             case JOB_SEEKER:
-                user = new JobSeeker();
+                user = new JobSeeker.Builder()
+                    .firstName(firstName)
+                    .lastName(lastName)
+                    .email(email)
+                    .password(password)
+                    .build();
                 break;
             case EMPLOYER:
-                user = new Employer();
+                user = new Employer.Builder()
+                    .firstName(firstName)
+                    .lastName(lastName)
+                    .email(email)
+                    .password(password)
+                    .build();
                 break;
             default:
                 throw new IllegalArgumentException("Unsupported user role: " + role);
         }
-        
-        // Set common properties
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setEmail(email);
-        user.setPassword(password);
         
         return user;
     }
     
     public JobSeeker createJobSeeker(String firstName, String lastName, String email, String password, 
                                     String skills, String experience, String education) {
-        JobSeeker jobSeeker = (JobSeeker) createUser(firstName, lastName, email, password, UserRole.JOB_SEEKER);
-        jobSeeker.setSkills(skills);
-        jobSeeker.setExperience(experience);
-        jobSeeker.setEducation(education);
-        return jobSeeker;
+        return new JobSeeker.Builder()
+            .firstName(firstName)
+            .lastName(lastName)
+            .email(email)
+            .password(password)
+            .skills(skills)
+            .experience(experience)
+            .education(education)
+            .build();
     }
     
     public Employer createEmployer(String firstName, String lastName, String email, String password,
                                   String companyName, String industry, String companySize) {
-        Employer employer = (Employer) createUser(firstName, lastName, email, password, UserRole.EMPLOYER);
-        employer.setCompanyName(companyName);
-        employer.setIndustry(industry);
-        employer.setCompanySize(companySize);
-        return employer;
+        return new Employer.Builder()
+            .firstName(firstName)
+            .lastName(lastName)
+            .email(email)
+            .password(password)
+            .companyName(companyName)
+            .industry(industry)
+            .companySize(companySize)
+            .build();
     }
 } 
