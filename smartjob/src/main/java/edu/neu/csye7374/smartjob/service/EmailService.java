@@ -14,6 +14,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Service
 public class EmailService {
@@ -31,13 +33,18 @@ public class EmailService {
         String emailContent = loadTemplate(templatePath);
         emailContent = emailContent.replace("{{firstName}}", firstName);
 
+        String fromEmail = String.format("welcome@%s", domain);
+        String body = String.format("from=%s&to=%s&subject=%s&html=%s",
+            URLEncoder.encode(fromEmail, StandardCharsets.UTF_8),
+            URLEncoder.encode(toEmail, StandardCharsets.UTF_8),
+            URLEncoder.encode("Welcome to Smart-Job", StandardCharsets.UTF_8),
+            URLEncoder.encode(emailContent, StandardCharsets.UTF_8));
+
         String url = String.format("https://api.mailgun.net/v3/%s/messages", domain);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setBasicAuth("api", apiKey);
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-        String body = String.format("from=welcome@%s&to=%s&subject=Welcome to Smart-Job&html=%s", domain, toEmail, emailContent);
 
         HttpEntity<String> request = new HttpEntity<>(body, headers);
 
