@@ -1,5 +1,13 @@
  package edu.neu.csye7374.smartjob.controller;
 
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import edu.neu.csye7374.smartjob.strategy.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -14,12 +22,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
 import edu.neu.csye7374.smartjob.invokers.JobPostInvoker;
 import edu.neu.csye7374.smartjob.model.JobPost;
 import edu.neu.csye7374.smartjob.model.User;
 import edu.neu.csye7374.smartjob.service.JobPostService;
 import jakarta.servlet.http.HttpSession;
+
+import org.springframework.web.bind.annotation.RequestParam;
+
+import edu.neu.csye7374.smartjob.strategy.SearchContext;
 
 
 @Controller
@@ -95,4 +106,39 @@ public class JobPostController {
 	    jobPostInvoker.invokeDelete(jobPost);
 	    return ResponseEntity.ok("Job deleted successfully.");
 	}
+
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchJobs(@RequestParam String searchTerm, @RequestParam String searchType, HttpSession session){
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return ResponseEntity.status(401).body("Please log in to search jobs.");
+        }
+
+        try {
+            // Perform search
+            List<JobPost> searchResults = jobPostService.searchUserJobs(user, searchTerm, searchType);
+            
+            // Format results
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy");
+            List<Map<String, Object>> formattedResults = searchResults.stream()
+                .map(job -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("jobId", job.getJobId());
+                    map.put("title", job.getTitle());
+                    map.put("companyName", job.getCompanyName());
+                    map.put("location", job.getLocation());
+                    map.put("postedDate", job.getPostedDate().format(formatter));
+                    return map;
+                })
+                .collect(Collectors.toList());
+
+            return ResponseEntity.ok(formattedResults);
+            
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("An error occurred while searching jobs");
+        }
+    }
 }
