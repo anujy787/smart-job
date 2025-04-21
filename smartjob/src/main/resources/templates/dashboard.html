@@ -74,6 +74,12 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/dashboard">Dashboard</a>
                     </li>
+                    <li class="nav-item" th:if="${session.user.role.name() == 'JOB_SEEKER'}">
+                        <a class="nav-link" href="/notifications">
+                            <i class="fas fa-bell"></i> Notifications
+                            <span class="badge bg-danger" th:text="${unreadNotificationCount}">0</span>
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/logout">Logout</a>
                     </li>
