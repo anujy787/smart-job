@@ -55,6 +55,35 @@ public class JobPostController {
 		redirectAttributes.addFlashAttribute("success", "Job posted successfully.");
 	    return "redirect:/dashboard";
     }
+	
+	@GetMapping("/edit/{id}")
+    public String showEditJobForm(@PathVariable Long id, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+        User user = (User) session.getAttribute("user");
+        JobPost jobPost = jobPostService.findById(id);
+
+        if (jobPost == null || !jobPost.getUser().getId().equals(user.getId())) {
+            redirectAttributes.addFlashAttribute("error", "Unauthorized access.");
+            return "redirect:/dashboard";
+        }
+
+        model.addAttribute("jobPost", jobPost);
+        return "edit-job";  
+    }
+	
+	@PostMapping("/update/{id}")
+    public String updateJob(@PathVariable Long id, @ModelAttribute JobPost jobPost, HttpSession session, RedirectAttributes redirectAttributes) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            redirectAttributes.addFlashAttribute("error", "Please log in to update the job.");
+            return "redirect:/login";
+        }
+
+        jobPost.setJobId(id);
+        jobPost.setUser(user);  
+        jobPostInvoker.invokeUpdate(jobPost);
+        redirectAttributes.addFlashAttribute("success", "Job post updated successfully.");
+        return "redirect:/dashboard";
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<String> updateJob(@PathVariable Long id, @RequestBody JobPost jobPost) {

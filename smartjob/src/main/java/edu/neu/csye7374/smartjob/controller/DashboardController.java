@@ -38,6 +38,7 @@ public class DashboardController {
                 map.put("title", job.getTitle());
                 map.put("companyName", job.getCompanyName());
                 map.put("location", job.getLocation());
+                map.put("jobId", job.getJobId());
                 map.put("postedDate", job.getPostedDate().format(formatter));
                 return map;
             })

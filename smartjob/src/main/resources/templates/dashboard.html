@@ -129,6 +129,9 @@
 				                        <td th:text="${job.companyName}">Company Name</td>
 				                        <td th:text="${job.location}">Location</td>
 				                        <td th:text="${job.postedDate}">Posted Date</td>
+				                         <td>
+									        <a th:href="@{'/jobs/edit/' + ${job.jobId}}" class="btn btn-sm btn-warning">Modify</a>
+									    </td>
 				                    </tr>
 				                </tbody>
 				            </table>
@@ -140,6 +143,8 @@
 				</div>
 
             </div>
+            
+            
         </div>
     </div>
 </body>
