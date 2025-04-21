@@ -1,5 +1,7 @@
 package edu.neu.csye7374.smartjob.commands;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +22,11 @@ public class UpdateJobPostCommand implements JobPostCommand{
 	@Override
 	public void execute(JobPost jobPost) {
 		jobPostService.updateJobPost(jobPost);
+	}
+
+	@Override
+	public Map<String, Object> executeDelete(JobPost jobPost) {
+		return null;
 	}
 	
 }
