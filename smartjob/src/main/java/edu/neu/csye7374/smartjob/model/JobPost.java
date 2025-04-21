@@ -1,5 +1,7 @@
 package edu.neu.csye7374.smartjob.model;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -23,6 +25,13 @@ public class JobPost {
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id", nullable = false)
     private User user;
+	
+	@Column(name = "posted_date", nullable = false)
+	private LocalDateTime postedDate;
+	
+	
+	@Column(name = "status", nullable = false)
+	private String status;
 	
 	
 	private String title;
@@ -99,6 +108,19 @@ public class JobPost {
 	}
 	public void setUser(User user) {
 		this.user = user;
+	}
+	
+	public LocalDateTime getPostedDate() {
+		return postedDate;
+	}
+	public void setPostedDate(LocalDateTime postedDate) {
+		this.postedDate = postedDate;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 }

@@ -1,5 +1,7 @@
 package edu.neu.csye7374.smartjob.utils;
 
+import java.time.LocalDateTime;
+
 import edu.neu.csye7374.smartjob.model.JobPost;
 import edu.neu.csye7374.smartjob.model.User;
 
@@ -17,6 +19,16 @@ public class JobPostBuilder {
 
     public JobPostBuilder setUser(User user) {
         jobPost.setUser(user); return this;
+    }  
+    
+    public JobPostBuilder setPostedDate(LocalDateTime postedDate) {
+        jobPost.setPostedDate(postedDate);
+        return this;
+    }
+    
+    public JobPostBuilder setStatus(String status) {
+        jobPost.setStatus(status);
+        return this;
     }
 
     public JobPostBuilder setCompanyName(String companyName) {

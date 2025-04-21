@@ -109,21 +109,36 @@
                 </div>
 
                 <div class="card">
-                    <div class="card-header">
-                        <h5 class="mb-0">Recent Activity</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="list-group">
-                            <div class="list-group-item">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h6 class="mb-1">Welcome to SmartJob!</h6>
-                                    <small class="text-muted">Just now</small>
-                                </div>
-                                <p class="mb-1">Your account has been successfully created.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+				    <div class="card-header">
+				        <h5 class="mb-0">Recent Activity</h5>
+				    </div>
+				    <div class="card-body">
+				        <div th:if="${not #lists.isEmpty(jobPost)}">
+				            <table class="table table-striped">
+				                <thead>
+				                    <tr>
+				                        <th>Title</th>
+				                        <th>Company</th>
+				                        <th>Location</th>
+				                        <th>Posted On</th>
+				                    </tr>
+				                </thead>
+				                <tbody>
+				                    <tr th:each="job : ${jobPost}">
+				                        <td th:text="${job.title}">Job Title</td>
+				                        <td th:text="${job.companyName}">Company Name</td>
+				                        <td th:text="${job.location}">Location</td>
+				                        <td th:text="${job.postedDate}">Posted Date</td>
+				                    </tr>
+				                </tbody>
+				            </table>
+				        </div>
+				        <div th:if="${#lists.isEmpty(jobPost)}">
+				            <p>No job postings yet.</p>
+				        </div>
+				    </div>
+				</div>
+
             </div>
         </div>
     </div>

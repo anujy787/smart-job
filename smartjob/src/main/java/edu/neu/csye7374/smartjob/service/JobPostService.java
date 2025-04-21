@@ -1,12 +1,15 @@
 package edu.neu.csye7374.smartjob.service;
 
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import edu.neu.csye7374.smartjob.factory.JobPostCreator;
 import edu.neu.csye7374.smartjob.factory.JobPostFactory;
 import edu.neu.csye7374.smartjob.model.JobPost;
+import edu.neu.csye7374.smartjob.model.User;
 import edu.neu.csye7374.smartjob.repository.JobPostRepository;
 
 @Service
@@ -18,6 +21,10 @@ public class JobPostService {
 	public JobPostService(JobPostRepository jobPostRepo) {
 		this.jobPostRepo = jobPostRepo;
 	}
+	
+	public List<JobPost> getJobsByUser(User user) {
+        return jobPostRepo.findByUserOrderByPostedDateDesc(user);
+    }
 	
 	public JobPost createJob(JobPost inp) {
 		JobPostCreator creator = JobPostFactory.getCreator(inp.getJobType());
