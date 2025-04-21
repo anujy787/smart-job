@@ -41,7 +41,7 @@
                 <div class="job-title mb-2" th:text="${job.title}">Job Title</div>
                 <div class="company mb-2"><i class="fas fa-building me-2"></i><span th:text="${job.companyName}">Company Name</span></div>
                 <div class="location mb-2"><i class="fas fa-map-marker-alt me-2"></i><span th:text="${job.location}">Location</span></div>
-                <div class="mb-2"><span th:text="${#dates.format(job.postedDate, 'dd MMM yyyy')}">Posted Date</span></div>
+                <div class="mb-2"><span th:text="${#temporals.format(job.postedDate, 'dd MMM yyyy')}">Posted Date</span></div>
                 <div class="mb-2"><strong>Type:</strong> <span th:text="${job.jobType}">Job Type</span></div>
                 <div class="mb-2"><strong>Salary:</strong> <span th:text="${job.salaryRange}">Salary</span></div>
                 <div class="mb-2"><strong>Description:</strong> <span th:text="${job.jobDescription}">Job Description</span></div>
