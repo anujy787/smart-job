@@ -1,6 +1,7 @@
 package edu.neu.csye7374.smartjob.utils;
 
 import edu.neu.csye7374.smartjob.model.JobPost;
+import edu.neu.csye7374.smartjob.model.User;
 
 public class JobPostBuilder {
 	
@@ -12,6 +13,10 @@ public class JobPostBuilder {
 
     public JobPostBuilder setTitle(String title) {
         jobPost.setTitle(title); return this;
+    }
+
+    public JobPostBuilder setUser(User user) {
+        jobPost.setUser(user); return this;
     }
 
     public JobPostBuilder setCompanyName(String companyName) {

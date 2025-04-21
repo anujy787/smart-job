@@ -15,7 +15,8 @@ public class FullTimeJobCreator implements JobPostCreator {
 				.setJobType("Full-time")
 				.setJobDescription(inp.getJobDescription())
 				.setJobRequirements(inp.getJobRequirements())
-				.setJobResponsibilities(inp.getJobResponsibilities()).build();
+				.setJobResponsibilities(inp.getJobResponsibilities())
+				.setUser(inp.getUser()).build();
 	}
 
 }

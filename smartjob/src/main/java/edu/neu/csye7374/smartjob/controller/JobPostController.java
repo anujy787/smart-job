@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+
 import edu.neu.csye7374.smartjob.invokers.JobPostInvoker;
 import edu.neu.csye7374.smartjob.model.JobPost;
 import edu.neu.csye7374.smartjob.model.User;
@@ -49,7 +50,6 @@ public class JobPostController {
 			redirectAttributes.addFlashAttribute("error", "Please log in to post a job.");
             return "redirect:/login";
         }
-		System.out.println("User" + user.getId());
 		jobPost.setUser(user);
 		jobPostService.createJob(jobPost);
 		redirectAttributes.addFlashAttribute("success", "Job posted successfully.");

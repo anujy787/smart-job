@@ -16,6 +16,6 @@ public class PartTimeJobCreator implements JobPostCreator {
 	                .setJobDescription(inp.getJobDescription())
 	                .setJobRequirements(inp.getJobRequirements())
 	                .setJobResponsibilities(inp.getJobResponsibilities())
-	                .build();
+	                .setUser(inp.getUser()).build();
 	    }
 }
