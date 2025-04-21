@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Application Withdrawn</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f7f9fa; margin: 0; padding: 0; }
+        .container { background: #fff; max-width: 500px; margin: 40px auto; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); padding: 32px; }
+        .header { color: #e53e3e; font-size: 2em; margin-bottom: 8px; }
+        .job-title { color: #111; font-weight: bold; }
+        .footer { margin-top: 32px; color: #888; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">Application Withdrawn</div>
+        <p>Dear {{firstName}},</p>
+        <p>Your application for <span class="job-title">{{jobTitle}}</span> at <b>{{companyName}}</b> has been successfully withdrawn.</p>
+        <p>If this was a mistake, you can always re-apply for this or other jobs through SmartJob.</p>
+        <div class="footer">This is an automated email from SmartJob. Please do not reply directly to this message.</div>
+    </div>
+</body>
+</html>

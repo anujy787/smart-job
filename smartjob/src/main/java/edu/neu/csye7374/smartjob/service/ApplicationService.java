@@ -18,6 +18,21 @@ public class ApplicationService {
     @Autowired
     private edu.neu.csye7374.smartjob.service.JobPostService jobPostService;
 
+    @Autowired
+    private edu.neu.csye7374.smartjob.service.EmailService emailService;
+
+    private edu.neu.csye7374.smartjob.service.email.JobApplicationEmailAdapter jobApplicationEmailAdapter;
+
+    @Autowired
+    public ApplicationService(JobApplicationRepository jobApplicationRepository,
+                             edu.neu.csye7374.smartjob.service.JobPostService jobPostService,
+                             edu.neu.csye7374.smartjob.service.EmailService emailService) {
+        this.jobApplicationRepository = jobApplicationRepository;
+        this.jobPostService = jobPostService;
+        this.emailService = emailService;
+        this.jobApplicationEmailAdapter = new edu.neu.csye7374.smartjob.service.email.JobApplicationEmailAdapter(emailService);
+    }
+
     public JobApplication applyForJob(JobSeeker jobSeeker, JobPost jobPost) {
         JobApplication application = new JobApplication(
             null, // Let the DB handle the ID
@@ -28,11 +43,13 @@ public class ApplicationService {
             new Date()
         );
         // Use State pattern to invoke apply logic if needed
-        application.getStateObj().apply(application);
-        return jobApplicationRepository.save(application);
+        jobApplicationRepository.save(application);
+        // Send applied email
+        jobApplicationEmailAdapter.sendApplicationStatusEmail(application, "APPLIED");
+        return application;
     }
 
-    public boolean withdrawApplication(Long applicationId) {
+    public boolean withdraw(Long applicationId) {
         return jobApplicationRepository.findById(applicationId).map(application -> {
             String state = application.getState();
             if ("APPLIED".equals(state) || "IN-REVIEW".equals(state)) {
@@ -66,6 +83,8 @@ public class ApplicationService {
                 application.getStateObj().hire(application);
                 application.setState("HIRED"); // Ensure persistent state is set
                 jobApplicationRepository.save(application);
+                // Send hired email
+                jobApplicationEmailAdapter.sendApplicationStatusEmail(application, "HIRED");
                 return true;
             }
             return false;
@@ -78,6 +97,8 @@ public class ApplicationService {
             if ("IN-REVIEW".equals(state) || "APPLIED".equals(state)) {
                 application.getStateObj().reject(application);
                 jobApplicationRepository.save(application);
+                // Send rejected email
+                jobApplicationEmailAdapter.sendApplicationStatusEmail(application, "REJECTED");
                 return true;
             }
             return false;
@@ -102,6 +123,11 @@ public class ApplicationService {
             result.add(new JobPostWithApplications(job, apps));
         }
         return result;
+    }
+
+    // Check if a job seeker has already applied for a job post
+    public boolean hasApplied(Long jobSeekerId, Long jobId) {
+        return jobApplicationRepository.existsByJobSeeker_IdAndJobPost_JobId(jobSeekerId, jobId);
     }
 
     public static class JobPostWithApplications {

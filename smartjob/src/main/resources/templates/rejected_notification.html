@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Update on your job application</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f7f9fa; margin: 0; padding: 0; }
+        .container { background: #fff; max-width: 500px; margin: 40px auto; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); padding: 32px; }
+        .header { color: #e53e3e; font-size: 2em; margin-bottom: 8px; }
+        .job-title { color: #111; font-weight: bold; }
+        .footer { margin-top: 32px; color: #888; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">Application Update</div>
+        <p>Dear {{firstName}},</p>
+        <p>We regret to inform you that you have <span class="job-title">not been selected</span> for the position of <span class="job-title">{{jobTitle}}</span> at <b>{{companyName}}</b>.</p>
+        <p>Thank you for your interest and for applying through SmartJob. We encourage you to keep searching for more opportunities on our platform!</p>
+        <div class="footer">This is an automated email from SmartJob. Please do not reply directly to this message.</div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Application Received</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f7f9fa; margin: 0; padding: 0; }
+        .container { background: #fff; max-width: 500px; margin: 40px auto; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); padding: 32px; }
+        .header { color: #2563eb; font-size: 2em; margin-bottom: 8px; }
+        .job-title { color: #111; font-weight: bold; }
+        .footer { margin-top: 32px; color: #888; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">Thank you for applying, {{firstName}}!</div>
+        <p>Your application for <span class="job-title">{{jobTitle}}</span> at <b>{{companyName}}</b> has been received.</p>
+        <p>We appreciate your interest in this position. The employer will review your application and contact you if you are shortlisted.</p>
+        <div class="footer">This is an automated email from SmartJob. Please do not reply directly to this message.</div>
+    </div>
+</body>
+</html>

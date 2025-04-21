@@ -48,7 +48,7 @@ public class ApplicationController {
 
     @PostMapping("/withdraw/{id}")
     public String withdrawApplication(@PathVariable Long id) {
-        applicationService.withdrawApplication(id);
+        applicationService.withdraw(id);
         return "redirect:/applications";
     }
 

@@ -26,6 +26,7 @@ import edu.neu.csye7374.smartjob.invokers.JobPostInvoker;
 import edu.neu.csye7374.smartjob.model.JobPost;
 import edu.neu.csye7374.smartjob.model.User;
 import edu.neu.csye7374.smartjob.service.JobPostService;
+import edu.neu.csye7374.smartjob.service.ApplicationService;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,16 +38,36 @@ import edu.neu.csye7374.smartjob.strategy.SearchContext;
 @RequestMapping("/jobs")
 public class JobPostController {
 
+    @Autowired
+    private ApplicationService applicationService;
+
     // /browse-jobs mapping moved to new controller
 
     @GetMapping("/{id}")
-    public String jobDetails(@PathVariable Long id, Model model) {
+    public String jobDetails(@PathVariable Long id, Model model, HttpSession session) {
         JobPost job = jobPostService.findById(id);
         if (job == null) {
             model.addAttribute("error", "Job not found");
             return "redirect:/browse-jobs";
         }
         model.addAttribute("job", job);
+        // Check if user is logged in and is a job seeker
+        Object userObj = session.getAttribute("user");
+        boolean hasApplied = false;
+        String applicationStatus = null;
+        if (userObj != null && userObj instanceof edu.neu.csye7374.smartjob.model.JobSeeker) {
+            edu.neu.csye7374.smartjob.model.JobSeeker jobSeeker = (edu.neu.csye7374.smartjob.model.JobSeeker) userObj;
+            List<edu.neu.csye7374.smartjob.model.JobApplication> applications = applicationService.getApplicationsByJobSeekerId(jobSeeker.getId());
+            for (edu.neu.csye7374.smartjob.model.JobApplication app : applications) {
+                if (app.getJobPost().getJobId().equals(job.getJobId())) {
+                    hasApplied = true;
+                    applicationStatus = app.getState();
+                    break;
+                }
+            }
+        }
+        model.addAttribute("hasApplied", hasApplied);
+        model.addAttribute("applicationStatus", applicationStatus);
         return "job-details";
     }
 	
