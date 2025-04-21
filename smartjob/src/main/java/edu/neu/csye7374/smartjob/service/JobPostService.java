@@ -49,5 +49,9 @@ public class JobPostService {
 	    return jobPostRepo.findById(id).orElse(null);
 	}
 	
+	public void deleteJobById(Long id) {
+	    jobPostRepo.deleteById(id);
+	}
+	
 	
 }

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,11 +32,6 @@ public class JobPostController {
 	@Autowired
 	private  JobPostInvoker jobPostInvoker;
 	
-	
-//	public JobPostController(JobPostService jobPostService,JobPostInvoker jobPostInvoker ) {
-//		this.jobPostService = jobPostService;
-//		this.jobPostInvoker = jobPostInvoker;
-//	}
 	
 	@GetMapping("/create")
     public String showCreateJobForm(Model model) {
@@ -85,10 +81,18 @@ public class JobPostController {
         return "redirect:/dashboard";
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<String> updateJob(@PathVariable Long id, @RequestBody JobPost jobPost) {
-        jobPost.setJobId(id);
-        jobPostInvoker.invokeUpdate(jobPost);
-        return ResponseEntity.ok("Job post updated successfully.");
-    }
+//    @PutMapping("/{id}")
+//    public ResponseEntity<String> updateJob(@PathVariable Long id, @RequestBody JobPost jobPost) {
+//        jobPost.setJobId(id);
+//        jobPostInvoker.invokeUpdate(jobPost);
+//        return ResponseEntity.ok("Job post updated successfully.");
+//    }
+	
+	@DeleteMapping("/delete/{id}")
+	public ResponseEntity<String> deleteJob(@PathVariable Long id) {
+	    JobPost jobPost = new JobPost();
+	    jobPost.setJobId(id);
+	    jobPostInvoker.invokeDelete(jobPost);
+	    return ResponseEntity.ok("Job deleted successfully.");
+	}
 }

@@ -1,13 +1,19 @@
 package edu.neu.csye7374.smartjob.invokers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import edu.neu.csye7374.smartjob.commands.DeletePostCommand;
 import edu.neu.csye7374.smartjob.commands.JobPostCommand;
 import edu.neu.csye7374.smartjob.model.JobPost;
 
 
 @Component
 public class JobPostInvoker {
+	
+	@Autowired
+	private DeletePostCommand deletePostCommand;
+
 	
 	private final JobPostCommand updateJobPostCommand;
 	
@@ -18,4 +24,10 @@ public class JobPostInvoker {
 	public void invokeUpdate(JobPost jobPost) {
 		updateJobPostCommand.execute(jobPost);
 	}
+	
+
+	public void invokeDelete(JobPost jobPost) {
+	    deletePostCommand.execute(jobPost);
+	}
+	
 }
