@@ -53,7 +53,7 @@ public class JobPostController {
 		jobPost.setUser(user);
 		jobPostService.createJob(jobPost);
 		redirectAttributes.addFlashAttribute("success", "Job posted successfully.");
-	    return "dashboard";
+	    return "redirect:/dashboard";
     }
 
     @PutMapping("/{id}")
