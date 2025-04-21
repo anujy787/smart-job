@@ -8,9 +8,11 @@ import org.springframework.stereotype.Service;
 
 import edu.neu.csye7374.smartjob.factory.JobPostCreator;
 import edu.neu.csye7374.smartjob.factory.JobPostFactory;
+import edu.neu.csye7374.smartjob.factory.SearchStrategyFactory;
 import edu.neu.csye7374.smartjob.model.JobPost;
 import edu.neu.csye7374.smartjob.model.User;
 import edu.neu.csye7374.smartjob.repository.JobPostRepository;
+import edu.neu.csye7374.smartjob.strategy.SearchContext;
 
 @Service
 public class JobPostService {
@@ -58,5 +60,28 @@ public class JobPostService {
 	    jobPostRepo.deleteById(id);
 	}
 	
+	public List<JobPost> searchUserJobs(User user, String searchTerm, String searchType) {
+        // Validate inputs
+        if (searchTerm == null || searchTerm.trim().isEmpty()) {
+            throw new IllegalArgumentException("Search term cannot be empty");
+        }
+        if (searchType == null || searchType.trim().isEmpty()) {
+            throw new IllegalArgumentException("Search type cannot be empty");
+        }
+
+        // Get user's jobs
+        List<JobPost> userJobs = jobPostRepo.findByUserOrderByPostedDateDesc(user);
+        
+        // Create and configure search context
+        SearchContext searchContext = new SearchContext();
+        try {
+            searchContext.setSearchStrategy(SearchStrategyFactory.getStrategy(searchType));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid search type: " + searchType);
+        }
+        
+        // Execute search
+        return searchContext.executeSearch(userJobs, searchTerm);
+    }
 	
 }

@@ -7,6 +7,57 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        .search-wrapper {
+            transition: all 0.3s ease;
+        }
+        
+        .search-wrapper:hover {
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+        }
+        
+        .search-input-wrapper .input-group {
+            border-radius: 0.375rem;
+            overflow: hidden;
+        }
+        
+        .search-input-wrapper .form-control:focus {
+            box-shadow: none;
+            border-color: #dee2e6;
+        }
+        
+        .search-type-wrapper .form-select {
+            min-width: 150px;
+        }
+        
+        .table {
+            margin-bottom: 0;
+        }
+        
+        .table th {
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .table td {
+            vertical-align: middle;
+        }
+        
+        .btn-group {
+            gap: 0.25rem;
+        }
+        
+        /* Animation for table rows */
+        #jobsTable tbody tr {
+            transition: all 0.2s ease;
+        }
+        
+        #jobsTable tbody tr:hover {
+            background-color: #f8f9fa;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -110,46 +161,86 @@
                 </div>
 
                 <div class="card">
-				    <div class="card-header">
-				        <h5 class="mb-0">Recent Activity</h5>
-				    </div>
-				    <div class="card-body">
-				        <div th:if="${not #lists.isEmpty(jobPost)}">
-				            <table class="table table-striped">
-				                <thead>
-				                    <tr>
-				                        <th>Title</th>
-				                        <th>Company</th>
-				                        <th>Location</th>
-				                        <th>Posted On</th>
-				                    </tr>
-				                </thead>
-				                <tbody>
-				                    <tr th:each="job : ${jobPost}">
-				                        <td th:text="${job.title}">Job Title</td>
-				                        <td th:text="${job.companyName}">Company Name</td>
-				                        <td th:text="${job.location}">Location</td>
-				                        <td th:text="${job.postedDate}">Posted Date</td>
-				                         <td>
-									        <a th:href="@{'/jobs/edit/' + ${job.jobId}}" class="btn btn-sm btn-warning">Modify</a>
-									        <button type="button" 
-                                                    class="btn btn-sm btn-danger delete-btn"
-                                                    th:data-job-id="${job.jobId}"
-                                                    th:data-job-title="${job.title}">
-                                                <i class="fas fa-trash"></i> Delete
-                                            </button>
-									        
-									        
-									    </td>
-				                    </tr>
-				                </tbody>
-				            </table>
-				        </div>
-				        <div th:if="${#lists.isEmpty(jobPost)}">
-				            <p>No job postings yet.</p>
-				        </div>
-				    </div>
-				</div>
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Recent Activity</h5>
+                            <div th:if="${session.user.role.name() == 'EMPLOYER'}" class="search-container">
+                                <div class="search-wrapper p-2 bg-light rounded-3 shadow-sm">
+                                    <div class="d-flex gap-3 align-items-center">
+                                        <div class="search-type-wrapper">
+                                            <select class="form-select form-select-sm" id="searchType">
+                                                <option value="" disabled>Search by...</option>
+                                                <option value="title" selected>Job Title</option>
+                                                <option value="company">Company Name</option>
+                                                <option value="location">Location</option>
+                                            </select>
+                                        </div>
+                                        <div class="search-input-wrapper flex-grow-1">
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-white border-end-0">
+                                                    <i class="fas fa-search text-muted"></i>
+                                                </span>
+                                                <input type="text" 
+                                                       class="form-control border-start-0 ps-0" 
+                                                       id="searchInput" 
+                                                       placeholder="Search jobs...">
+                                                <button class="btn btn-primary" id="searchButton">
+                                                    Search
+                                                </button>
+                                                <button class="btn btn-outline-secondary" id="clearButton" title="Clear search">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${not #lists.isEmpty(jobPost)}">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="jobsTable">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>Company</th>
+                                            <th>Location</th>
+                                            <th>Posted On</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="job : ${jobPost}">
+                                            <td th:text="${job.title}">Job Title</td>
+                                            <td th:text="${job.companyName}">Company Name</td>
+                                            <td th:text="${job.location}">Location</td>
+                                            <td th:text="${job.postedDate}">Posted Date</td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a th:href="@{'/jobs/edit/' + ${job.jobId}}" 
+                                                       class="btn btn-sm btn-warning">
+                                                        <i class="fas fa-edit"></i> Modify
+                                                    </a>
+                                                    <button type="button" 
+                                                            class="btn btn-sm btn-danger delete-btn"
+                                                            th:data-job-id="${job.jobId}"
+                                                            th:data-job-title="${job.title}">
+                                                        <i class="fas fa-trash"></i> Delete
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div th:if="${#lists.isEmpty(jobPost)}" class="text-center py-4">
+                            <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No job postings yet.</p>
+                        </div>
+                    </div>
+                </div>
 
             </div>
             
@@ -184,24 +275,132 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
+        const searchButton = document.getElementById('searchButton');
+        const clearButton = document.getElementById('clearButton');
+        const searchInput = document.getElementById('searchInput');
+        const searchType = document.getElementById('searchType');
+        const jobsTable = document.getElementById('jobsTable').getElementsByTagName('tbody')[0];
         const deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
         let jobToDelete = null;
 
-        // Handle click on delete buttons
-        document.querySelectorAll('.delete-btn').forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                // Store the job ID and title
-                jobToDelete = {
-                    id: this.getAttribute('data-job-id'),
-                    title: this.getAttribute('data-job-title')
-                };
-                // Update modal content
-                document.getElementById('jobTitleSpan').textContent = jobToDelete.title;
-                // Show modal
-                deleteModal.show();
+        if (searchButton && searchInput && searchType) {
+            // Add event listener for the search button
+            searchButton.addEventListener('click', performSearch);
+            
+            // Add event listener for Enter key in search input
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
             });
-        });
+        }
+
+        if (clearButton) {
+            clearButton.addEventListener('click', function() {
+                searchInput.value = '';
+                searchType.selectedIndex = 0;
+                window.location.reload(); // Reload to show original table
+            });
+        }
+
+        // Add loading state to search button
+        function setSearchLoading(isLoading) {
+            if (isLoading) {
+                searchButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Searching...';
+                searchButton.disabled = true;
+            } else {
+                searchButton.innerHTML = 'Search';
+                searchButton.disabled = false;
+            }
+        }
+
+        function performSearch() {
+            const searchTerm = searchInput.value.trim();
+            if (!searchTerm) {
+                window.location.reload();
+                return;
+            }
+
+            setSearchLoading(true);
+            fetch(`/jobs/search?searchTerm=${encodeURIComponent(searchTerm)}&searchType=${searchType.value}`, {
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]')?.getAttribute('content')
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Search failed');
+                }
+                return response.json();
+            })
+            .then(results => {
+                // Clear existing table rows
+                jobsTable.innerHTML = '';
+                
+                if (results.length === 0) {
+                    // Show no results message
+                    const noResultsRow = document.createElement('tr');
+                    noResultsRow.innerHTML = `
+                        <td colspan="5" class="text-center py-4">
+                            <i class="fas fa-search fa-2x text-muted mb-3"></i>
+                            <p class="text-muted mb-0">No matching jobs found</p>
+                        </td>
+                    `;
+                    jobsTable.appendChild(noResultsRow);
+                    
+                    return;
+                }
+
+                // Add new rows
+                results.forEach(job => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${job.title}</td>
+                        <td>${job.companyName}</td>
+                        <td>${job.location}</td>
+                        <td>${job.postedDate}</td>
+                        <td>
+                            <a href="/jobs/edit/${job.jobId}" class="btn btn-sm btn-warning">
+                                <i class="fas fa-edit"></i> Modify
+                            </a>
+                            <button type="button" 
+                                    class="btn btn-sm btn-danger delete-btn"
+                                    data-job-id="${job.jobId}"
+                                    data-job-title="${job.title}">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </td>
+                    `;
+                    jobsTable.appendChild(row);
+                });
+
+                // Reinitialize delete buttons
+                attachDeleteListeners();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to perform search. Please try again.');
+            }).finally(() => {
+            setSearchLoading(false);
+            });
+        }
+        // Handle click on delete buttons
+        function attachDeleteListeners() {
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // Store the job ID and title
+                    jobToDelete = {
+                        id: this.getAttribute('data-job-id'),
+                        title: this.getAttribute('data-job-title')
+                    };
+                    // Update modal content
+                    document.getElementById('jobTitleSpan').textContent = jobToDelete.title;
+                    // Show modal
+                    deleteModal.show();
+                });
+            });
+        }
 
         // Handle confirm delete button
         document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
@@ -227,6 +426,8 @@
                 alert('Failed to delete job. Please try again.');
             });
         });
+
+        attachDeleteListeners();
     });
     </script>
     <footer class="footer mt-auto py-3 bg-dark text-light shadow-lg">
