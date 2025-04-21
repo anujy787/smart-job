@@ -5,6 +5,7 @@ import edu.neu.csye7374.smartjob.model.Employer;
 import edu.neu.csye7374.smartjob.model.JobSeeker;
 import edu.neu.csye7374.smartjob.model.User;
 import edu.neu.csye7374.smartjob.repository.UserRepository;
+import edu.neu.csye7374.smartjob.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,9 @@ public class UserService {
     
     @Autowired
     private UserFactory userFactory;
+    
+    @Autowired
+    private EmailService emailService;
     
     /**
      * Register a new JobSeeker
@@ -38,7 +42,12 @@ public class UserService {
                                                           skills, experience, education);
         
         // Save to database
-        return (JobSeeker) userRepository.save(jobSeeker);
+        JobSeeker savedJobSeeker = (JobSeeker) userRepository.save(jobSeeker);
+        
+        // Send welcome email
+        emailService.sendWelcomeEmail(email, firstName, false);
+        
+        return savedJobSeeker;
     }
     
     /**
@@ -56,7 +65,12 @@ public class UserService {
         Employer employer = userFactory.createEmployer(firstName, lastName, email, encodedPassword,
                                                        companyName, industry, companySize);
         
-        return (Employer) userRepository.save(employer);
+        Employer savedEmployer = (Employer) userRepository.save(employer);
+        
+        // Send welcome email
+        emailService.sendWelcomeEmail(email, firstName, true);
+        
+        return savedEmployer;
     }
     
 

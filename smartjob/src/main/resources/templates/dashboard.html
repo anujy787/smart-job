@@ -99,6 +99,7 @@
                                 <i class="fas fa-envelope me-2"></i>
                                 <span th:text="${session.user.email}">email@example.com</span>
                             </div>
+
                             <div class="list-group-item">
                                 <i class="fas fa-user-tag me-2"></i>
                                 <span th:text="${session.user.role.name() == 'EMPLOYER' ? 'Employer' : 'Job Seeker'}">Role</span>
@@ -121,7 +122,7 @@
                                         <i class="fas fa-search fa-3x mb-3 text-primary"></i>
                                         <h5>Search Jobs</h5>
                                         <p>Find your next opportunity</p>
-                                        <a href="#" class="btn btn-outline-primary">Browse Jobs</a>
+                                        <a href="/browse-jobs" class="btn btn-outline-primary">Browse Jobs</a>
                                     </div>
                                 </div>
                             </div>
@@ -131,7 +132,7 @@
                                         <i class="fas fa-file-alt fa-3x mb-3 text-primary"></i>
                                         <h5>My Applications</h5>
                                         <p>Track your job applications</p>
-                                        <a href="#" class="btn btn-outline-primary">View Applications</a>
+                                        <a href="/applications" class="btn btn-outline-primary">View Applications</a>
                                     </div>
                                 </div>
                             </div>
@@ -151,7 +152,7 @@
                                         <i class="fas fa-users fa-3x mb-3 text-primary"></i>
                                         <h5>Manage Applications</h5>
                                         <p>Review candidate applications</p>
-                                        <a href="#" class="btn btn-outline-primary">View Applications</a>
+                                        <a href="/manage-applications" class="btn btn-outline-primary">View Applications</a>
                                     </div>
                                 </div>
                             </div>
@@ -247,6 +248,8 @@
         </div>
     </div>
 
+    <input type="hidden" id="jobSeekerId" th:value="${session.user.id}" />
+    <script src="/static/js/application.js"></script>
     <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -427,5 +430,68 @@
         attachDeleteListeners();
     });
     </script>
+    <footer class="footer mt-auto py-3 bg-dark text-light shadow-lg">
+        <div class="container text-center">
+            <span>&copy; 2025 SmartJob. All rights reserved.</span>
+            <span class="mx-2">|</span>
+            <a href="/" class="text-light text-decoration-underline">Home</a>
+            <span class="mx-2">|</span>
+            <a href="/dashboard" class="text-light text-decoration-underline">Dashboard</a>
+            <span class="mx-2">|</span>
+            <a href="mailto:support@smartjob.com" class="text-light text-decoration-underline">Contact</a>
+        </div>
+    </footer>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e3e9f7 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Inter', 'Poppins', 'Roboto', Arial, sans-serif;
+            color: #222;
+            letter-spacing: 0.01em;
+        }
+        h1, h2, h3, h4, h5, h6, .navbar-brand {
+            font-family: 'Poppins', 'Inter', Arial, sans-serif;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+        }
+        .navbar, .footer {
+            font-family: 'Inter', 'Poppins', Arial, sans-serif;
+        }
+        .card, .card-header {
+            font-family: 'Inter', 'Poppins', Arial, sans-serif;
+            font-size: 1.05rem;
+        }
+        .table, .list-group-item {
+            font-family: 'Inter', Arial, sans-serif;
+            font-size: 1.01rem;
+        }
+        .container {
+            flex: 1;
+        }
+        .card, .card-header {
+            border-radius: 1rem;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+        }
+        .card-header {
+            background: linear-gradient(90deg, #3a7bd5 0%, #00d2ff 100%);
+            color: #fff;
+        }
+        .btn, .list-group-item-action {
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+        }
+        .btn:hover, .list-group-item-action:hover {
+            background: #3a7bd5;
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(58,123,213,0.2);
+        }
+        .profile-card {
+            background: #fff;
+            border-radius: 1rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+    </style>
 </body>
 </html> 
