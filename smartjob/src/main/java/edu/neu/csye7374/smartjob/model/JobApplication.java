@@ -93,10 +93,14 @@ public class JobApplication {
         switch(state) {
             case "APPLIED":
                 return new edu.neu.csye7374.smartjob.service.state.AppliedState();
-            case "REJECTED":
-                return new edu.neu.csye7374.smartjob.service.state.RejectedState();
+            case "IN-REVIEW":
+                return new edu.neu.csye7374.smartjob.service.state.InReviewState();
             case "HIRED":
                 return new edu.neu.csye7374.smartjob.service.state.HiredState();
+            case "REJECTED":
+                return new edu.neu.csye7374.smartjob.service.state.RejectedState();
+            case "WITHDRAWN":
+                return new edu.neu.csye7374.smartjob.service.state.WithdrawnState();
             default:
                 throw new IllegalArgumentException("Unknown state: " + state);
         }

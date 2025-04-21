@@ -52,6 +52,25 @@ public class ApplicationController {
         return "redirect:/applications";
     }
 
+    // Employer actions
+    @PostMapping("/in-review/{id}")
+    public String setInReview(@PathVariable Long id) {
+        applicationService.setInReview(id);
+        return "redirect:/manage-applications";
+    }
+
+    @PostMapping("/hire/{id}")
+    public String setHired(@PathVariable Long id) {
+        applicationService.setHired(id);
+        return "redirect:/manage-applications";
+    }
+
+    @PostMapping("/reject/{id}")
+    public String setRejected(@PathVariable Long id) {
+        applicationService.setRejected(id);
+        return "redirect:/manage-applications";
+    }
+
     @GetMapping("/jobseeker/{id}")
     public List<JobApplication> getApplicationsByJobSeeker(@PathVariable Long id) {
         JobSeeker jobSeeker = new JobSeeker(); // This should be fetched from the database

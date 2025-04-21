@@ -3,16 +3,20 @@ package edu.neu.csye7374.smartjob.service.state;
 import edu.neu.csye7374.smartjob.model.JobApplication;
 import java.util.Date;
 
-public class AppliedState implements ApplicationState {
+public class InReviewState implements ApplicationState {
     @Override
     public void apply(JobApplication application) {
-        // Already applied, do nothing or throw exception
+        // Already in review, do nothing
     }
 
     @Override
     public void withdraw(JobApplication application) {
         application.setStateObj(new WithdrawnState());
         application.setLastUpdated(new Date());
+    }
+
+    public void inReview(JobApplication application) {
+        // Already in review, do nothing
     }
 
     @Override
@@ -29,13 +33,8 @@ public class AppliedState implements ApplicationState {
         application.setLastUpdated(new Date());
     }
 
-    public void inReview(JobApplication application) {
-        application.setStateObj(new InReviewState());
-        application.setLastUpdated(new Date());
-    }
-
     @Override
     public String getStateName() {
-        return "APPLIED";
+        return "IN-REVIEW";
     }
 }
