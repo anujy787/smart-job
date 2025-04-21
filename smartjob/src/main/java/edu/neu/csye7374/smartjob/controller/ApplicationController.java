@@ -6,10 +6,11 @@ import edu.neu.csye7374.smartjob.model.JobSeeker;
 import edu.neu.csye7374.smartjob.service.ApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
 
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/applications")
 public class ApplicationController {
 
@@ -22,8 +23,9 @@ public class ApplicationController {
     }
 
     @PostMapping("/withdraw/{id}")
-    public boolean withdrawApplication(@PathVariable Long id) {
-        return applicationService.withdrawApplication(id);
+    public String withdrawApplication(@PathVariable Long id) {
+        applicationService.withdrawApplication(id);
+        return "redirect:/applications";
     }
 
     @GetMapping("/jobseeker/{id}")

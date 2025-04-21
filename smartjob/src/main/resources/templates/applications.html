@@ -48,6 +48,11 @@
                         <td th:text="${app.jobPost != null ? app.jobPost.location : 'N/A'}">Location</td>
                         <td th:text="${app.state != null ? app.state : 'N/A'}">Status</td>
                         <td th:text="${app.applicationDate != null ? #dates.format(app.applicationDate, 'dd MMM yyyy') : 'N/A'}">Applied Date</td>
+                        <td>
+                            <form th:action="@{'/applications/withdraw/' + ${app.id}}" method="post" th:if="${app.state == 'APPLIED'}">
+                                <button type="submit" class="btn btn-danger btn-sm d-flex align-items-center"><i class="fas fa-times me-1"></i> Withdraw</button>
+                            </form>
+                        </td>
                     </tr>
                 </tbody>
             </table>
