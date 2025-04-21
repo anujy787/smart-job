@@ -1,7 +1,9 @@
 package edu.neu.csye7374.smartjob.service;
 
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,10 +11,13 @@ import org.springframework.stereotype.Service;
 import edu.neu.csye7374.smartjob.factory.JobPostCreator;
 import edu.neu.csye7374.smartjob.factory.JobPostFactory;
 import edu.neu.csye7374.smartjob.factory.SearchStrategyFactory;
+import edu.neu.csye7374.smartjob.model.JobApplication;
 import edu.neu.csye7374.smartjob.model.JobPost;
 import edu.neu.csye7374.smartjob.model.User;
+import edu.neu.csye7374.smartjob.repository.JobApplicationRepository;
 import edu.neu.csye7374.smartjob.repository.JobPostRepository;
 import edu.neu.csye7374.smartjob.strategy.SearchContext;
+import jakarta.transaction.Transactional;
 
 @Service
 public class JobPostService {
@@ -23,6 +28,9 @@ public class JobPostService {
     }
 	
 	private final JobPostRepository jobPostRepo;
+
+	@Autowired
+    private JobApplicationRepository jobApplicationRepository;
 	
 	@Autowired
 	public JobPostService(JobPostRepository jobPostRepo) {
@@ -56,8 +64,25 @@ public class JobPostService {
 	    return jobPostRepo.findById(id).orElse(null);
 	}
 	
-	public void deleteJobById(Long id) {
-	    jobPostRepo.deleteById(id);
+	@Transactional
+	public Map<String, Object> deleteJobById(Long jobId) {
+		Map<String, Object> response = new HashMap<>();
+		try {
+			JobPost jobPost = jobPostRepo.findById(jobId)
+                .orElseThrow(() -> new RuntimeException("Job post not found with id: " + jobId));
+
+			List<JobApplication> applications = jobApplicationRepository.findByJobPost_JobId(jobId);
+			if (!applications.isEmpty()) {
+                jobApplicationRepository.deleteAll(applications);
+            }
+			jobPostRepo.delete(jobPost);
+			response.put("success", true);
+			response.put("message", "Job post and " + applications.size() + " application(s) deleted successfully.");
+		} catch (Exception e) {
+			response.put("success", false);
+			response.put("message", "Failed to delete job post: " + e.getMessage());
+		}
+		return response;
 	}
 	
 	public List<JobPost> searchUserJobs(User user, String searchTerm, String searchType) {

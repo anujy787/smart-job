@@ -1,5 +1,7 @@
 package edu.neu.csye7374.smartjob.invokers;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,8 +28,8 @@ public class JobPostInvoker {
 	}
 	
 
-	public void invokeDelete(JobPost jobPost) {
-	    deletePostCommand.execute(jobPost);
+	public Map<String, Object> invokeDelete(JobPost jobPost) {
+	    return deletePostCommand.executeDelete(jobPost);
 	}
 	
 }
