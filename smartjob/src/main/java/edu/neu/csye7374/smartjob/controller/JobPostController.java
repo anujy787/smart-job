@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import edu.neu.csye7374.smartjob.strategy.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -113,11 +114,27 @@ public class JobPostController {
 //    }
 	
 	@DeleteMapping("/delete/{id}")
-	public ResponseEntity<String> deleteJob(@PathVariable Long id) {
-	    JobPost jobPost = new JobPost();
-	    jobPost.setJobId(id);
-	    jobPostInvoker.invokeDelete(jobPost);
-	    return ResponseEntity.ok("Job deleted successfully.");
+	public ResponseEntity<?> deleteJob(@PathVariable Long id) {
+        try {
+            JobPost jobPost = jobPostService.findById(id);
+
+            if (jobPost == null) {
+            throw new RuntimeException("Job post not found");
+            }
+            
+            Map<String, Object> result = jobPostInvoker.invokeDelete(jobPost);
+
+            if ((Boolean) result.get("success")) {
+                return ResponseEntity.ok(result);
+            } else {
+                return ResponseEntity.internalServerError().body(result);
+            }
+        } catch (Exception e) {
+            Map<String, String> response = new HashMap<>();
+            response.put("success", "false");
+            response.put("message", "An error occurred while deleting the job post.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
 	}
 
 

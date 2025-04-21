@@ -1,5 +1,7 @@
 package edu.neu.csye7374.smartjob.commands;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +16,10 @@ public class DeletePostCommand implements JobPostCommand {
 
     @Override
     public void execute(JobPost jobPost) {
-        jobPostService.deleteJobById(jobPost.getJobId());
+    }
+
+    @Override
+    public Map<String, Object> executeDelete(JobPost jobPost) {
+        return jobPostService.deleteJobById(jobPost.getJobId());
     }
 }
