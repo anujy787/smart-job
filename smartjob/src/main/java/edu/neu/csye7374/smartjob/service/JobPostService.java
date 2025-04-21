@@ -45,5 +45,9 @@ public class JobPostService {
         jobPostRepo.save(existing);
 	}
 	
+	public JobPost findById(Long id) {
+	    return jobPostRepo.findById(id).orElse(null);
+	}
+	
 	
 }
