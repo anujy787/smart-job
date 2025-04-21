@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Post a Job</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+    <h2>Post a New Job</h2>
+
+    <!-- Success Message -->
+    <div th:if="${success}" class="alert alert-success" role="alert">
+        <span th:text="${success}"></span>
+    </div>
+
+    <!-- Error Message -->
+    <div th:if="${error}" class="alert alert-danger" role="alert">
+        <span th:text="${error}"></span>
+    </div>
+
+    <form th:action="@{/jobs/create}" th:object="${jobPost}" method="post">
+        <div class="mb-3">
+            <label for="title" class="form-label">Job Title</label>
+            <input type="text" th:field="*{title}" class="form-control" id="title" required>
+        </div>
+        <div class="mb-3">
+            <label for="companyName" class="form-label">Company Name</label>
+            <input type="text" th:field="*{companyName}" class="form-control" id="companyName" required>
+        </div>
+        <div class="mb-3">
+            <label for="location" class="form-label">Location</label>
+            <input type="text" th:field="*{location}" class="form-control" id="location" required>
+        </div>
+        <div class="mb-3">
+            <label for="salaryRange" class="form-label">Salary Range</label>
+            <input type="text" th:field="*{salaryRange}" class="form-control" id="salaryRange">
+        </div>
+        <div class="mb-3">
+            <label for="jobType" class="form-label">Job Type</label>
+            <select th:field="*{jobType}" class="form-select" id="jobType" required>
+                <option value="" disabled selected>Select Job Type</option>
+                <option value="Full-Time">Full-time</option>
+                <option value="Part-Time">Part-time</option>
+                <option value="Remote">Remote</option>
+                <option value="Internship">Internship</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="jobDescription" class="form-label">Job Description</label>
+            <textarea th:field="*{jobDescription}" class="form-control" id="jobDescription" rows="3" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="jobRequirements" class="form-label">Job Requirements</label>
+            <textarea th:field="*{jobRequirements}" class="form-control" id="jobRequirements" rows="3" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="jobResponsibilities" class="form-label">Job Responsibilities</label>
+            <textarea th:field="*{jobResponsibilities}" class="form-control" id="jobResponsibilities" rows="3" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <a href="/dashboard" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+</body>
+</html>

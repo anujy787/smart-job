@@ -1,10 +1,15 @@
 package edu.neu.csye7374.smartjob.model;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 
 @Entity
 @DiscriminatorValue("EMPLOYER")
 public class Employer extends User {
+	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<JobPost> jobPosts;
     
     @Column
     private String companyName;
