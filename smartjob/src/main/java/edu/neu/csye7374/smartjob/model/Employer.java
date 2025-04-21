@@ -75,4 +75,81 @@ public class Employer extends User {
     public void setCompanyDescription(String companyDescription) {
         this.companyDescription = companyDescription;
     }
+    
+    /**
+     * Builder class for Employer
+     */
+    public static class Builder {
+        private String firstName;
+        private String lastName;
+        private String email;
+        private String password;
+        private String companyName;
+        private String industry;
+        private String companySize;
+        private String companyWebsite;
+        private String companyDescription;
+        
+        public Builder() {
+        }
+        
+        public Builder firstName(String firstName) {
+            this.firstName = firstName;
+            return this;
+        }
+        
+        public Builder lastName(String lastName) {
+            this.lastName = lastName;
+            return this;
+        }
+        
+        public Builder email(String email) {
+            this.email = email;
+            return this;
+        }
+        
+        public Builder password(String password) {
+            this.password = password;
+            return this;
+        }
+        
+        public Builder companyName(String companyName) {
+            this.companyName = companyName;
+            return this;
+        }
+        
+        public Builder industry(String industry) {
+            this.industry = industry;
+            return this;
+        }
+        
+        public Builder companySize(String companySize) {
+            this.companySize = companySize;
+            return this;
+        }
+        
+        public Builder companyWebsite(String companyWebsite) {
+            this.companyWebsite = companyWebsite;
+            return this;
+        }
+        
+        public Builder companyDescription(String companyDescription) {
+            this.companyDescription = companyDescription;
+            return this;
+        }
+        
+        public Employer build() {
+            Employer employer = new Employer();
+            employer.setFirstName(firstName);
+            employer.setLastName(lastName);
+            employer.setEmail(email);
+            employer.setPassword(password);
+            employer.setCompanyName(companyName);
+            employer.setIndustry(industry);
+            employer.setCompanySize(companySize);
+            employer.setCompanyWebsite(companyWebsite);
+            employer.setCompanyDescription(companyDescription);
+            return employer;
+        }
+    }
 } 
