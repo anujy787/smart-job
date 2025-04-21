@@ -25,6 +25,19 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/jobs")
 public class JobPostController {
+
+    // /browse-jobs mapping moved to new controller
+
+    @GetMapping("/{id}")
+    public String jobDetails(@PathVariable Long id, Model model) {
+        JobPost job = jobPostService.findById(id);
+        if (job == null) {
+            model.addAttribute("error", "Job not found");
+            return "redirect:/browse-jobs";
+        }
+        model.addAttribute("job", job);
+        return "job-details";
+    }
 	
 	@Autowired
 	private  JobPostService jobPostService;

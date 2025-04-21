@@ -14,6 +14,11 @@ import edu.neu.csye7374.smartjob.repository.JobPostRepository;
 
 @Service
 public class JobPostService {
+    public List<JobPost> getAllJobs() {
+        // Directly fetch all jobs from the job_posts table
+        List<JobPost> jobs = jobPostRepo.findAll();
+        return jobs != null ? jobs : java.util.Collections.emptyList();
+    }
 	
 	private final JobPostRepository jobPostRepo;
 	
