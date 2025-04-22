@@ -51,4 +51,14 @@ public class NotificationService {
         }
         notificationRepository.saveAll(unreadNotifications);
     }
+
+    @Transactional
+    public void deleteReadNotifications(User user) {
+        notificationRepository.deleteByUserAndIsReadTrue(user);
+    }
+
+    @Transactional
+    public void deleteNotification(Long notificationId) {
+        notificationRepository.deleteById(notificationId);
+    }
 } 
