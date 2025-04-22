@@ -240,7 +240,6 @@ SmartJob uses Thymeleaf as a templating engine to create a responsive, user-frie
 - **Email**: Mailgun API integration
 
 ## 📊 Project Structure
-## 📊 Project Structure
 ```
 smartjob/
 ├── src/
