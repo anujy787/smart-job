@@ -240,32 +240,37 @@ SmartJob uses Thymeleaf as a templating engine to create a responsive, user-frie
 - **Email**: Mailgun API integration
 
 ## 📊 Project Structure
+## 📊 Project Structure
+```
 smartjob/
 ├── src/
 │   ├── main/
-│   │   ├── java/
-│   │   │   └── edu/neu/csye7374/smartjob/
-│   │   │       ├── commands/               # Command pattern implementation
-│   │   │       ├── config/                 # Configuration classes
-│   │   │       ├── controller/             # MVC controllers
-│   │   │       ├── factory/                # Factory pattern implementations
-│   │   │       ├── invokers/               # Command invokers
-│   │   │       ├── model/                  # Domain model objects
-│   │   │       ├── observer/               # Observer pattern implementation
-│   │   │       ├── repository/             # Data access repositories
-│   │   │       ├── service/                # Business logic services
-│   │   │       │   └── state/              # State pattern implementation
-│   │   │       ├── strategy/               # Strategy pattern implementation
-│   │   │       ├── utils/                  # Utility classes
-│   │   │       └── SmartjobApplication     # Main application class
+│   │   ├── java/edu/neu/csye7374/smartjob/
+│   │   │   ├── commands/               # Command pattern implementation
+│   │   │   ├── config/                 # Configuration classes
+│   │   │   ├── controller/             # MVC controllers
+│   │   │   ├── factory/                # Factory pattern implementations
+│   │   │   ├── invokers/               # Command invokers
+│   │   │   ├── model/                  # Domain model objects
+│   │   │   ├── observer/               # Observer pattern implementation
+│   │   │   ├── repository/             # Data access repositories
+│   │   │   ├── service/                # Business logic services
+│   │   │   │   └── state/              # State pattern implementation
+│   │   │   ├── strategy/               # Strategy pattern implementation
+│   │   │   ├── utils/                  # Utility classes
+│   │   │   └── SmartjobApplication.java # Main application class
+│   │   │
 │   │   └── resources/
-│   │       ├── static/                     # Static resources (CSS, JS)
-│   │       │   ├── css/                    # CSS stylesheets
-│   │       │   └── js/                     # JavaScript files
-│   │       └── templates/                  # Thymeleaf templates
-│   │           ├── layout/                 # Layout templates
-│   │           └── emails/                 # Email templates
-└── pom.xml                                # Maven configuration
+│   │       ├── static/                 # Static resources
+│   │       │   ├── css/                # CSS stylesheets
+│   │       │   └── js/                 # JavaScript files
+│   │       │
+│   │       └── templates/              # Thymeleaf templates
+│   │           ├── layout/             # Layout templates
+│   │           └── emails/             # Email templates
+│   │
+└── pom.xml                            # Maven configuration
+```                             
 ## 🚀 Getting Started
 
 ### Prerequisites
