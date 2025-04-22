@@ -166,11 +166,11 @@
                     </div>
                 </div>
 
-                <div class="card">
+                <div th:if="${session.user.role.name() == 'EMPLOYER'}" class="card">
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0">Recent Activity</h5>
-                            <div th:if="${session.user.role.name() == 'EMPLOYER'}" class="search-container">
+                            <h5 class="mb-0">Posted Jobs</h5>
+                            <div class="search-container">
                                 <div class="search-wrapper p-2 bg-light rounded-3 shadow-sm">
                                     <div class="d-flex gap-3 align-items-center">
                                         <div class="search-type-wrapper">
