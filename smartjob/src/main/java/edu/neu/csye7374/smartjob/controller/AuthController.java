@@ -1,7 +1,6 @@
 package edu.neu.csye7374.smartjob.controller;
 
-import edu.neu.csye7374.smartjob.model.User;
-import edu.neu.csye7374.smartjob.service.UserService;
+import edu.neu.csye7374.smartjob.service.AuthenticationManager;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class AuthController {
     
     @Autowired
-    private UserService userService;
+    private AuthenticationManager authManager;
     
     @GetMapping("/")
     public String showLandingPage() {
@@ -45,8 +44,8 @@ public class AuthController {
                              @RequestParam String password,
                              HttpSession session) {
         try {
-            User user = userService.authenticateUser(email, password);
-            session.setAttribute("user", user);
+            // Use the AuthenticationManager singleton to handle login
+            authManager.login(email, password, session);
             return "redirect:/dashboard";
         } catch (RuntimeException e) {
             return "redirect:/login?error=" + e.getMessage();
@@ -55,7 +54,8 @@ public class AuthController {
     
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        session.invalidate();
+        // Use the AuthenticationManager singleton to handle logout
+        authManager.logout(session);
         return "redirect:/";
     }
 } 
