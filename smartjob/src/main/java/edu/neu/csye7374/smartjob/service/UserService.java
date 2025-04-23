@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.Base64;
+import java.util.Map;
 
 @Service
 public class UserService {
@@ -89,5 +90,48 @@ public class UserService {
         }
         
         return user;
+    }
+
+    public JobSeeker updateJobSeekerDetails(Map<String, String> updates) {
+        Long userId = Long.parseLong(updates.get("userId"));
+        JobSeeker jobSeeker = (JobSeeker) userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("Job seeker not found"));
+
+        System.out.println("Updating job seeker with ID: " + userId);
+        System.out.println("Current values - FirstName: " + jobSeeker.getFirstName() + 
+                         ", LastName: " + jobSeeker.getLastName() +
+                         ", Skills: " + jobSeeker.getSkills() +
+                         ", Experience: " + jobSeeker.getExperience() +
+                         ", Education: " + jobSeeker.getEducation());
+
+        if (updates.containsKey("firstName")) {
+            jobSeeker.setFirstName(updates.get("firstName"));
+        }
+        if (updates.containsKey("lastName")) {
+            jobSeeker.setLastName(updates.get("lastName"));
+        }
+        if (updates.containsKey("skills")) {
+            jobSeeker.setSkills(updates.get("skills"));
+        }
+        if (updates.containsKey("experience")) {
+            jobSeeker.setExperience(updates.get("experience"));
+        }
+        if (updates.containsKey("education")) {
+            jobSeeker.setEducation(updates.get("education"));
+        }
+
+        JobSeeker updatedJobSeeker = (JobSeeker) userRepository.save(jobSeeker);
+        System.out.println("Updated values - FirstName: " + updatedJobSeeker.getFirstName() + 
+                         ", LastName: " + updatedJobSeeker.getLastName() +
+                         ", Skills: " + updatedJobSeeker.getSkills() +
+                         ", Experience: " + updatedJobSeeker.getExperience() +
+                         ", Education: " + updatedJobSeeker.getEducation());
+
+        return updatedJobSeeker;
+    }
+
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 } 

@@ -125,6 +125,16 @@
                             <div class="col-md-6 mb-3" th:if="${session.user.role.name() == 'JOB_SEEKER'}">
                                 <div class="card h-100">
                                     <div class="card-body text-center">
+                                        <i class="fas fa-user fa-3x mb-3 text-primary"></i>
+                                        <h5>My Profile</h5>
+                                        <p>View and edit your profile</p>
+                                        <a href="/profile" class="btn btn-outline-primary">View Profile</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3" th:if="${session.user.role.name() == 'JOB_SEEKER'}">
+                                <div class="card h-100">
+                                    <div class="card-body text-center">
                                         <i class="fas fa-search fa-3x mb-3 text-primary"></i>
                                         <h5>Search Jobs</h5>
                                         <p>Find your next opportunity</p>
