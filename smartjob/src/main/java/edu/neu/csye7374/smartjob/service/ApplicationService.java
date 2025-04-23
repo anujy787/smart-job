@@ -1,5 +1,6 @@
 package edu.neu.csye7374.smartjob.service;
 
+import edu.neu.csye7374.smartjob.factory.ApplicationSearchStrategyFactory;
 import edu.neu.csye7374.smartjob.model.JobApplication;
 import edu.neu.csye7374.smartjob.model.JobPost;
 import edu.neu.csye7374.smartjob.model.JobSeeker;
@@ -9,6 +10,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import edu.neu.csye7374.smartjob.repository.JobApplicationRepository;
+import edu.neu.csye7374.smartjob.strategy.SearchContext;
 
 @Service
 public class ApplicationService {
@@ -35,13 +37,12 @@ public class ApplicationService {
 
     public JobApplication applyForJob(JobSeeker jobSeeker, JobPost jobPost) {
         JobApplication application = new JobApplication(
-            null, // Let the DB handle the ID
-            jobSeeker,
-            jobPost,
-            "APPLIED",
-            new Date(),
-            new Date()
-        );
+                null, // Let the DB handle the ID
+                jobSeeker,
+                jobPost,
+                "APPLIED",
+                new Date(),
+                new Date());
         // Use State pattern to invoke apply logic if needed
         jobApplicationRepository.save(application);
         // Send applied email
@@ -67,7 +68,8 @@ public class ApplicationService {
             String state = application.getState();
             if ("APPLIED".equals(state)) {
                 if (application.getStateObj() instanceof edu.neu.csye7374.smartjob.service.state.AppliedState) {
-                    ((edu.neu.csye7374.smartjob.service.state.AppliedState)application.getStateObj()).inReview(application);
+                    ((edu.neu.csye7374.smartjob.service.state.AppliedState) application.getStateObj())
+                            .inReview(application);
                     jobApplicationRepository.save(application);
                     return true;
                 }
@@ -133,9 +135,27 @@ public class ApplicationService {
     public static class JobPostWithApplications {
         public JobPost jobPost;
         public List<JobApplication> applications;
+
         public JobPostWithApplications(JobPost jobPost, List<JobApplication> applications) {
             this.jobPost = jobPost;
             this.applications = applications;
         }
     }
-} 
+
+    public List<JobApplication> searchUserApplications(User user, String searchTerm, String searchType) {
+        if (searchTerm == null || searchTerm.isBlank()) {
+            throw new IllegalArgumentException("Search term cannot be empty");
+        }
+        if (searchType == null || searchType.isBlank()) {
+            throw new IllegalArgumentException("Search type cannot be empty");
+        }
+
+        // get all this user’s applications
+        List<JobApplication> apps = getApplicationsByJobSeekerId(user.getId());
+
+        // apply the correct strategy
+        SearchContext<JobApplication> ctx = new SearchContext<>();
+        ctx.setSearchStrategy(ApplicationSearchStrategyFactory.getStrategy(searchType));
+        return ctx.executeSearch(apps, searchTerm);
+    }
+}

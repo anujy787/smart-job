@@ -58,4 +58,22 @@ public class NotificationController {
         }
         return ResponseEntity.ok(notificationService.getUnreadNotificationCount(user));
     }
+
+    @PostMapping("/delete-read")
+    @ResponseBody
+    public ResponseEntity<?> deleteReadNotifications(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user != null) {
+            notificationService.deleteReadNotifications(user);
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/delete/{id}")
+    @ResponseBody
+    public ResponseEntity<?> deleteNotification(@PathVariable Long id) {
+        notificationService.deleteNotification(id);
+        return ResponseEntity.ok().build();
+    }
+
 } 

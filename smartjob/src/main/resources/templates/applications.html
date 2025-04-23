@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Applications - SmartJob</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
@@ -16,117 +19,142 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/dashboard">Dashboard</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/logout">Logout</a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="/dashboard">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
     <div class="container mt-4">
-    <div class="card shadow-lg p-4 mb-4">
+        <div class="card shadow-lg p-4 mb-4">
+            <h2>My Applications</h2>
+            <div th:if="${error != null}" class="alert alert-danger" th:text="${error}"></div>
 
-        <h2>My Applications</h2>
-        <div th:if="${error != null}" class="alert alert-danger" th:text="${error}"></div>
-        <div th:if="${not #lists.isEmpty(applications)}">
-            <table class="table table-bordered table-striped mt-3">
-                <thead>
-                    <tr>
-                        <th>Job Title</th>
-                        <th>Company</th>
-                        <th>Location</th>
-                        <th>Status</th>
-                        <th>Applied Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="app : ${applications}">
-                        <td th:text="${app.jobPost != null ? app.jobPost.title : 'N/A'}">Job Title</td>
-                        <td th:text="${app.jobPost != null ? app.jobPost.companyName : 'N/A'}">Company</td>
-                        <td th:text="${app.jobPost != null ? app.jobPost.location : 'N/A'}">Location</td>
-                        <td th:text="${app.state != null ? app.state : 'N/A'}">Status</td>
-                        <td th:text="${app.applicationDate != null ? #dates.format(app.applicationDate, 'dd MMM yyyy') : 'N/A'}">Applied Date</td>
-                        <td>
-                            <form th:action="@{'/applications/withdraw/' + ${app.id}}" method="post" th:if="${app.state == 'APPLIED'}">
-                                <button type="submit" class="btn btn-danger btn-sm d-flex align-items-center"><i class="fas fa-times me-1"></i> Withdraw</button>
-                            </form>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div th:if="${#lists.isEmpty(applications)}">
-            <p>You have not applied to any jobs yet.</p>
+            <!-- SEARCH FILTER -->
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <select id="searchType" class="form-select">
+                        <option value="" disabled selected>Search by…</option>
+                        <option value="title">Job Title</option>
+                        <option value="company">Company</option>
+                        <option value="location">Location</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" id="searchInput" class="form-control" placeholder="Enter search term">
+                </div>
+                <div class="col-md-4">
+                    <button id="searchBtn" class="btn btn-primary me-2">Search</button>
+                    <button id="clearBtn" class="btn btn-outline-secondary">Clear</button>
+                </div>
+            </div>
+
+            <!-- APPLICATIONS TABLE -->
+            <div th:if="${not #lists.isEmpty(applications)}">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped mt-3">
+                        <thead>
+                            <tr>
+                                <th>Job Title</th>
+                                <th>Company</th>
+                                <th>Location</th>
+                                <th>Status</th>
+                                <th>Applied Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="appsTableBody">
+                            <tr th:each="app : ${applications}">
+                                <td th:text="${app.jobPost.title}">Job Title</td>
+                                <td th:text="${app.jobPost.companyName}">Company</td>
+                                <td th:text="${app.jobPost.location}">Location</td>
+                                <td th:text="${app.state}">Status</td>
+                                <td th:text="${#dates.format(app.applicationDate,'dd MMM yyyy')}">Applied Date</td>
+                                <td>
+                                    <form th:action="@{'/applications/withdraw/' + ${app.id}}" method="post"
+                                        th:if="${app.state == 'APPLIED'}">
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-times me-1"></i> Withdraw
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- EMPTY STATE: always present, hidden via d-none when applications exist -->
+            <div id="emptyApplications" th:classappend="${not #lists.isEmpty(applications)} ? ' d-none'"
+                class="text-center py-4">
+                <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                <p class="text-muted">You have not applied to any jobs yet.</p>
+            </div>
         </div>
     </div>
 
-    <footer class="footer mt-auto py-3 bg-dark text-light shadow-lg">
-        <div class="container text-center">
-            <span>&copy; 2025 SmartJob. All rights reserved.</span>
-            <span class="mx-2">|</span>
-            <a href="/" class="text-light text-decoration-underline">Home</a>
-            <span class="mx-2">|</span>
-            <a href="/dashboard" class="text-light text-decoration-underline">Dashboard</a>
-            <span class="mx-2">|</span>
-            <a href="mailto:support@smartjob.com" class="text-light text-decoration-underline">Contact</a>
-        </div>
-    </footer>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-<style>
-        body {
-    background: linear-gradient(135deg, #f8fafc 0%, #e3e9f7 100%);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    font-family: 'Inter', 'Poppins', 'Roboto', Arial, sans-serif;
-    color: #222;
-    letter-spacing: 0.01em;
-}
-h1, h2, h3, h4, h5, h6, .navbar-brand {
-    font-family: 'Poppins', 'Inter', Arial, sans-serif;
-    font-weight: 600;
-    letter-spacing: 0.01em;
-}
-.navbar, .footer {
-    font-family: 'Inter', 'Poppins', Arial, sans-serif;
-}
-.card, .card-header {
-    font-family: 'Inter', 'Poppins', Arial, sans-serif;
-    font-size: 1.05rem;
-}
-.table, .list-group-item {
-    font-family: 'Inter', Arial, sans-serif;
-    font-size: 1.01rem;
-}
-        .container {
-            flex: 1;
-        }
-        .card, .card-header {
-            border-radius: 1rem;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.07);
-        }
-        .card-header {
-            background: linear-gradient(90deg, #3a7bd5 0%, #00d2ff 100%);
-            color: #fff;
-        }
-        .btn, .list-group-item-action {
-            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-        }
-        .btn:hover, .list-group-item-action:hover {
-            background: #3a7bd5;
-            color: #fff;
-            box-shadow: 0 2px 8px rgba(58,123,213,0.2);
-        }
-        .table {
-            border-radius: 1rem;
-            overflow: hidden;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-            background: #fff;
-        }
-    </style>
+    <!-- SEARCH SCRIPT -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchBtn = document.getElementById('searchBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const searchInput = document.getElementById('searchInput');
+            const searchType = document.getElementById('searchType');
+            const tableBody = document.getElementById('appsTableBody');
+            const emptyDiv = document.getElementById('emptyApplications');
+
+            function renderApplications(apps) {
+                tableBody.innerHTML = '';
+                if (apps.length === 0) {
+                    emptyDiv.style.display = 'block';
+                    return;
+                }
+                emptyDiv.style.display = 'none';
+                apps.forEach(app => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+            <td>${app.title}</td>
+            <td>${app.companyName}</td>
+            <td>${app.location}</td>
+            <td>${app.state}</td>
+            <td>${app.applicationDate}</td>
+            <td>
+              ${app.state === 'APPLIED'
+                            ? `<form action="/applications/withdraw/${app.id}" method="post">
+                     <button type="submit" class="btn btn-danger btn-sm">
+                       <i class="fas fa-times me-1"></i> Withdraw
+                     </button>
+                   </form>`
+                            : ''}
+            </td>
+          `;
+                    tableBody.appendChild(tr);
+                });
+            }
+
+            searchBtn.addEventListener('click', function () {
+                const term = searchInput.value.trim();
+                const type = searchType.value;
+                if (!term || !type) return;
+
+                fetch(`/applications/search?searchTerm=${encodeURIComponent(term)}&searchType=${type}`)
+                    .then(res => {
+                        if (!res.ok) throw new Error('Search failed');
+                        return res.json();
+                    })
+                    .then(data => renderApplications(data))
+                    .catch(err => console.error(err));
+            });
+
+            clearBtn.addEventListener('click', function () {
+                searchInput.value = '';
+                searchType.selectedIndex = 0;
+                window.location.reload();
+            });
+        });
+    </script>
 </body>
+
 </html>
