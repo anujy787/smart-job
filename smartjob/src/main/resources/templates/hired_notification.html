@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Congratulations! You've been hired</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f7f9fa; margin: 0; padding: 0; }
+        .container { background: #fff; max-width: 500px; margin: 40px auto; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); padding: 32px; }
+        .header { color: #2563eb; font-size: 2em; margin-bottom: 8px; }
+        .job-title { color: #111; font-weight: bold; }
+        .cta { margin-top: 24px; display: block; background: #2563eb; color: #fff; text-decoration: none; padding: 12px 24px; border-radius: 6px; text-align: center; font-weight: 600; letter-spacing: 1px; }
+        .footer { margin-top: 32px; color: #888; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">Congratulations, {{firstName}}!</div>
+        <p>You have been <span class="job-title">HIRED</span> for the position of <span class="job-title">{{jobTitle}}</span> at <b>{{companyName}}</b>.</p>
+        <p>We are excited to welcome you to the team. The employer will reach out to you with next steps soon.</p>
+        <a href="https://smart-job.com" class="cta">Visit SmartJob</a>
+        <div class="footer">This is an automated email from SmartJob. Please do not reply directly to this message.</div>
+    </div>
+</body>
+</html>

@@ -55,11 +55,34 @@ public class EmailService {
         }
     }
 
-    private String loadTemplate(String path) {
+    public String loadTemplate(String path) {
         try {
             return new String(Files.readAllBytes(Paths.get(getClass().getResource(path).toURI())));
         } catch (IOException | URISyntaxException e) {
             throw new RuntimeException("Failed to load email template", e);
+        }
+    }
+
+    public void sendCustomEmail(String toEmail, String subject, String htmlContent) {
+        String fromEmail = String.format("no-reply@%s", domain);
+        String body = String.format("from=%s&to=%s&subject=%s&html=%s",
+            URLEncoder.encode(fromEmail, java.nio.charset.StandardCharsets.UTF_8),
+            URLEncoder.encode(toEmail, java.nio.charset.StandardCharsets.UTF_8),
+            URLEncoder.encode(subject, java.nio.charset.StandardCharsets.UTF_8),
+            URLEncoder.encode(htmlContent, java.nio.charset.StandardCharsets.UTF_8));
+
+        String url = String.format("https://api.mailgun.net/v3/%s/messages", domain);
+
+        org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+        headers.setBasicAuth("api", apiKey);
+        headers.setContentType(org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED);
+
+        org.springframework.http.HttpEntity<String> request = new org.springframework.http.HttpEntity<>(body, headers);
+
+        org.springframework.http.ResponseEntity<String> response = restTemplate.exchange(url, org.springframework.http.HttpMethod.POST, request, String.class);
+
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            throw new RuntimeException("Failed to send email");
         }
     }
 }
