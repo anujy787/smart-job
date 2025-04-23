@@ -15,7 +15,8 @@ SmartJob implements several design patterns to ensure maintainable, scalable, an
 ### 1. Factory Pattern
 - **JobPostFactory**: Creates different types of job posts (Full-time, Part-time, Remote, Internship)
 - **UserFactory**: Creates different types of users (JobSeeker, Employer)
-- **SearchStrategyFactory**: Creates search strategies based on search type
+- **SearchStrategyFactory**: Creates search strategies based on search type for jobs
+- **ApplicationSearchStrategyFactory**: Creates search strategies for job applications
 
 ### 2. Builder Pattern
 - **JobPostBuilder**: Constructs job post objects with many optional parameters
@@ -27,11 +28,14 @@ SmartJob implements several design patterns to ensure maintainable, scalable, an
 - **JobPostInvoker**: Invokes the appropriate command
 
 ### 4. Strategy Pattern
-- **SearchStrategy**: Interface defining search behavior
+- **SearchStrategy<T>**: Generic interface defining search behavior
 - **TitleSearchStrategy**: Searches jobs by title
 - **CompanySearchStrategy**: Searches jobs by company
 - **LocationSearchStrategy**: Searches jobs by location
-- **SearchContext**: Sets and executes the appropriate search strategy
+- **ApplicationTitleSearchStrategy**: Searches applications by job title
+- **ApplicationCompanySearchStrategy**: Searches applications by company name
+- **ApplicationLocationSearchStrategy**: Searches applications by location
+- **SearchContext<T>**: Sets and executes the appropriate search strategy
 
 ### 5. Observer Pattern
 - **NotificationObserver**: Interface for notification observers
@@ -46,13 +50,16 @@ SmartJob implements several design patterns to ensure maintainable, scalable, an
 - **RejectedState**: Represents the 'rejected' state
 - **WithdrawnState**: Represents the 'withdrawn' state
 
-### 7. Singleton Pattern
+### 7. Adapter Pattern
+- **JobApplicationEmailAdapter**: Adapts the EmailService for specific job application emails
+
+### 8. Singleton Pattern
 - Spring beans are singletons by default, including services and repositories
 
-### 8. Dependency Injection
+### 9. Dependency Injection
 - Used throughout the application via Spring's @Autowired annotation
 
-### 9. Repository Pattern
+### 10. Repository Pattern
 - All database access is abstracted through repositories (JobPostRepository, UserRepository, etc.)
 
 ## 📋 API Documentation
@@ -90,6 +97,7 @@ SmartJob implements several design patterns to ensure maintainable, scalable, an
 | POST | `/applications/reject/{id}` | Set application as rejected | Path variable: `id` | Redirect to manage-applications |
 | GET | `/applications/jobseeker/{id}` | Get applications by job seeker | Path variable: `id` | List of applications |
 | GET | `/applications` | Show user applications | None | Applications page |
+| GET | `/applications/search` | Search applications | Query params: `searchTerm`, `searchType` | Application search results |
 | GET | `/manage-applications` | Show employer's managed applications | None | Manage applications page |
 
 ### Notifications
@@ -98,6 +106,8 @@ SmartJob implements several design patterns to ensure maintainable, scalable, an
 | GET | `/notifications` | Get user notifications | None | Notifications page |
 | POST | `/notifications/mark-read/{id}` | Mark notification as read | Path variable: `id` | Success response |
 | POST | `/notifications/mark-all-read` | Mark all notifications as read | None | Success response |
+| POST | `/notifications/delete-read` | Delete all read notifications | None | Success response |
+| DELETE | `/notifications/delete/{id}` | Delete specific notification | Path variable: `id` | Success response |
 | GET | `/notifications/unread-count` | Get unread notification count | None | Count of unread notifications |
 
 ### Pages
@@ -121,16 +131,24 @@ SmartJob implements several design patterns to ensure maintainable, scalable, an
 
 3. **Job Search**:
    - JobSeekers search jobs via Strategy pattern
+   - SearchStrategy and SearchContext handle search logic
    - Results displayed via BrowseJobsController
 
 4. **Job Application**:
    - JobSeekers apply for jobs via ApplicationController
    - Application status managed via State pattern
    - Status changes trigger notifications
+   - Email notifications sent via JobApplicationEmailAdapter
 
 5. **Application Management**:
    - Employers manage applications via EmployerApplicationsController
    - Status changes managed via Command pattern
+   - Email notifications sent to applicants on status changes
+
+6. **Notification System**:
+   - Notifications created for various system events
+   - Users can mark notifications as read, delete individual notifications
+   - Batch operations for managing multiple notifications
 
 ## 🧩 Model Objects
 
@@ -165,8 +183,8 @@ SmartJob uses Thymeleaf as a templating engine to create a responsive, user-frie
 
 2. **Interactive UI Components**
    - Dynamic form handling with JavaScript validation
-   - Real-time notification system
-   - AJAX-powered job search functionality
+   - Real-time notification system with mark-as-read and delete functionality
+   - AJAX-powered job and application search functionality
    - Modal confirmations for critical actions
 
 3. **Role-Based Interface**
@@ -186,16 +204,17 @@ SmartJob uses Thymeleaf as a templating engine to create a responsive, user-frie
 
 - **Job Management**
   - `browse-jobs.html`: Grid view of available job listings
-  - `job-details.html`: Detailed view of a specific job post
+  - `job-details.html`: Detailed view of a specific job post with application status
   - `post-job.html`: Form for creating new job listings
   - `edit-job.html`: Form for updating existing job listings
 
 - **Application Management**
-  - `applications.html`: Job seeker's view of their applications
+  - `applications.html`: Job seeker's view of their applications with search functionality
   - `manage-applications.html`: Employer's view for reviewing applicants
 
 - **Notifications**
   - `notifications.html`: List view of user notifications with read/unread status
+  - Delete functionality for individual notifications and batch operations
   - Real-time counter in the navigation bar
 
 - **Dashboard**
@@ -206,6 +225,10 @@ SmartJob uses Thymeleaf as a templating engine to create a responsive, user-frie
 - **Email Templates**
   - `welcome_jobseeker.html`: Onboarding email for new job seekers
   - `welcome_employer.html`: Onboarding email for new employers
+  - `applied_notification.html`: Confirmation email when a job seeker applies for a job
+  - `hired_notification.html`: Notification when a job seeker is hired
+  - `rejected_notification.html`: Notification when a job application is rejected
+  - `withdrawn_notification.html`: Confirmation when a job application is withdrawn
 
 ### UI/UX Design Features
 
@@ -284,7 +307,35 @@ smartjob/
 4. Start the application with `mvn spring-boot:run`
 5. Access the application at `http://localhost:8080`
 
+## 🆕 Recent Updates
+
+### 1. Notification System Enhancements
+- Added ability to delete individual notifications
+- Added functionality to batch delete all read notifications
+- Improved notification UI with better visual indicators and interaction
+
+### 2. Application State and Email Notifications
+- Implemented email notifications for application status changes
+- Created email templates for different application states (Applied, Hired, Rejected, Withdrawn)
+- Integrated the EmailService with JobApplicationEmailAdapter for better separation of concerns
+
+### 3. Enhanced Search Functionality
+- Added generic search capabilities with parameterized SearchStrategy interface
+- Implemented application-specific search strategies for title, company, and location
+- Created improved search UI for job applications with filtering options
+
+### 4. Job Application UX Improvements
+- Enhanced job details page to show application status for logged-in users
+- Disabled apply button for jobs the user has already applied to
+- Added status indicators on application listings
+
 ## 🤝 Contributing
+### TEAM MEMBERS
+- [@Anuj Yogesh Sharma](https://github.com/anujy787)
+- [@Nilraj Mayekar](https://github.com/NilrajMayekar)
+- [@Anirudh Maheshwari](https://github.com/anirudhm4)
+- [@Rohith Varma Datla](https://github.com/Rohithvarma8)
+- [@Bhuvan Dama Venkatesh Raj](https://github.com/bhuvan-dv)
 Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 📝 License
